@@ -1,55 +1,61 @@
-nm = str(input("Olá! Digite seu nome: "))
+nome = input("Digite o nome do funcionário: ")
 
-idd = int(input(f"Perfeito, {nm}! Agora, digite sua idade: "))
+print("\nCargo:")
+print("1 - Gerente")
+print("2 - Analista")
+print("3 - Assistente")
+print("4 - Estagiário")
+cargo = int(input("Escolha o cargo: "))
 
-def pode_aprovar(idade, renda, valor):
-    if idade < 18:
-        return False
-    if valor > 20 * renda:
-        return False
-    return True
+salario_base = float(input("Digite o salário base R$: "))
+horas_extras = float(input("Digite total de horas extras: "))
+faltas = int(input("Digite total de faltas: "))
 
-def definir_taxa(parcelas):
-    if parcelas <= 6:
-        return 5 / 100
-    elif parcelas <= 12:
-        return 8 / 100
+resp_bonus = input("Recebeu bônus? (Sim/Não): ").lower()
+recebeu_bonus = resp_bonus == 'sim'  # corrigido
+
+
+def calcular_horas_extras(salario_base, horas):
+    valor_hora_extra = salario_base * 0.015
+    return horas * valor_hora_extra
+
+
+def calcular_descontos_faltas(salario_base, faltas):
+    desconto_por_falta = salario_base * 0.02
+    return faltas * desconto_por_falta
+
+
+def calcular_bonus(cargo, recebeu_bonus):
+    if not recebeu_bonus:
+        return 0
+
+    if cargo == 1:  # Gerente
+        return 1000
+    elif cargo == 2:  # Analista
+        return 500
+    elif cargo == 3:  # Assistente
+        return 300
+    elif cargo == 4:  # Estagiário
+        return 100
     else:
-        return 10 / 100
+        return 0
 
-def calcular_parcela(valor, taxa, parcelas):
-    return valor * (taxa * (1 + taxa) * parcelas) / ((1 + taxa) * parcelas - 1)
 
-def calcular_total(parcela, parcelas):
-    return parcela * parcelas
+# cálculos
+total_horas_extras = calcular_horas_extras(salario_base, horas_extras)
+total_descontos = calcular_descontos_faltas(salario_base, faltas)
+bonus = calcular_bonus(cargo, recebeu_bonus)
 
-def calcular_juros(total, valor):
-    return total - valor
+salario_bruto = salario_base
+acrescimos = total_horas_extras + bonus
+salario_final = salario_bruto + acrescimos - total_descontos
 
-if idd < 18:
-    print(f"Sinto muito, {nm}... tendo {idd} anos não lhe é permitido realizar quaisquer empréstimos. Tente novamente no futuro!")
-else:
-    renda_me = float(input(f"{nm}, por gentileza, digite sua renda mensal (em formato 1234): "))
-    valor_max = 20 * renda_me
-    valor_digitado = float(input(f"Tendo uma renda mensal de R$ {renda_me:.2f}, digite o valor do empréstimo que você gostaria de realizar: "))
 
-    if not pode_aprovar(idd, renda_me, valor_digitado):
-        print(f"Sinto muito, {nm}... tendo uma renda mensal de apenas R$ {renda_me:.2f}, seu empréstimo de R$ {valor_digitado:.2f} não pôde ser aprovado.")
-    else:
-        pcl = int(input(f"Digite o número de parcelas (3 a 24) para seu empréstimo de R$ {valor_digitado:.2f}: "))
-
-        if pcl < 3 or pcl > 24:
-            print("Número de parcelas inválido. Deve ser entre 3 e 24.")
-        else:
-            taxa = definir_taxa(pcl)
-            parcela = calcular_parcela(valor_digitado, taxa, pcl)
-            total = calcular_total(parcela, pcl)
-            juros = calcular_juros(total, valor_digitado)
-
-            print(f"\nEmpréstimo APROVADO!")
-            print(f"Nome do cliente: {nm}")
-            print(f"Valor financiado: R$ {valor_digitado:.2f}")
-            print(f"Taxa de juros aplicada: {taxa * 100:.0f}% ao mês")
-            print(f"Valor da parcela: R$ {parcela:.2f}")
-            print(f"Valor total pago: R$ {total:.2f}")
-            print(f"Total de juros pagos: R$ {juros:.2f}")
+# saída
+print("\n====== RESULTADO ======")
+print(f"Funcionário: {nome}")
+print(f"Salário bruto: R$ {salario_bruto:.2f}")
+print(f"Horas extras: R$ {total_horas_extras:.2f}")
+print(f"Bônus: R$ {bonus:.2f}")
+print(f"Descontos: R$ {total_descontos:.2f}")
+print(f"Salário final: R$ {salario_final:.2f}")
